@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int      @id @default(autoincrement())
+  name     String
+  email    String   @unique
+  password String
+  role     Role     @default(STUDENT)
+
+  courses  Course[] // Instructor can have multiple courses
+}
+
+model Course {
+  id          Int              @id @default(autoincrement())
+  title       String
+  description String
+  imageUrl    String?
+  instructor  User             @relation(fields: [instructorId], references: [id])
+  instructorId Int
+  lessons     Lesson[]
+  createdAt   DateTime         @default(now())
+  archived    Boolean          @default(false)
+
+  // Add this relation field
+  revisions   CourseRevision[]  // One course can have many revisions
+}
+
+model CourseRevision {
+  id           Int      @id @default(autoincrement())
+  courseId     Int
+  course       Course   @relation(fields: [courseId], references: [id])
+  title        String
+  description  String
+  imageUrl     String?
+  createdAt    DateTime @default(now())
+}
+
+model Lesson {
+  id        Int    @id @default(autoincrement())
+  title     String
+  content   String
+  type      String  // Add a new field for lesson type
+  position  Int
+  courseId  Int
+  course    Course @relation(fields: [courseId], references: [id])
+  order     Int    @default(0)
+}
+
+enum Role {
+  ADMIN
+  INSTRUCTOR
+  STUDENT
+}
