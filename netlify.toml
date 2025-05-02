@@ -2,12 +2,19 @@
   command = "npx prisma generate && next build"
   publish = ".next"
 
+[functions]
+  node_bundler = "esbuild"
+  external_node_modules = ["@prisma/client"]
+  included_files = [
+    "node_modules/.prisma/client/**",
+    "prisma/schema.prisma",
+    ".env",
+    ".env.production",
+    ".env.local"
+  ]
+
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
 [[plugins]]
   package = "netlify-plugin-prisma-provider"
-  
-[functions]
-  external_node_modules = ["@prisma/client"]
-  included_files = ["node_modules/.prisma/client/**"]
