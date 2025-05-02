@@ -55,11 +55,10 @@ model Lesson {
   id        Int    @id @default(autoincrement())
   title     String
   content   String
-  type      String  // Add a new field for lesson type
-  position  Int
+  type      String  @default("text")   // Default to text
+  position  Int     @default(0)        // Default to 0
   courseId  Int
   course    Course @relation(fields: [courseId], references: [id])
-  order     Int    @default(0)
 }
 
 enum Role {
