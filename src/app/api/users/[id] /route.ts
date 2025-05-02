@@ -1,26 +1,18 @@
-import { NextRequest, NextResponse } from "next/server";
-import { authenticate } from "@/lib/auth";
-import { PrismaClient } from "@prisma/client";
+// src/app/api/users/[id]/route.ts
 
-const prisma = new PrismaClient();
+import { NextRequest } from "next/server";
 
 export async function GET(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const session = await authenticate(req);
-  if (!session) {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-  }
+  const userId = params.id;
 
-  const user = await prisma.user.findUnique({
-    where: { id: params.id },
-    select: { id: true, name: true, email: true, role: true },
+  // You can now fetch the user from DB or return a mock response
+  return new Response(JSON.stringify({ id: userId, name: "John Doe" }), {
+    status: 200,
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
-
-  if (!user) {
-    return NextResponse.json({ message: "User not found" }, { status: 404 });
-  }
-
-  return NextResponse.json(user);
 }
