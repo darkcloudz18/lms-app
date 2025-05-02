@@ -40,11 +40,15 @@ async function main() {
         title: "Introduction to Next.js",
         content: "Welcome to Next.js!",
         courseId: course.id,
+        type: "text", // ✅ Add this
+        position: 1, // ✅ Add this
       },
       {
-        title: "Pages & Routing",
-        content: "Learn about Next.js routing system.",
+        title: "Advanced Concepts",
+        content: "Let’s dive deeper...",
         courseId: course.id,
+        type: "text",
+        position: 2,
       },
     ],
   });
