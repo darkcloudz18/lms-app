@@ -3,7 +3,7 @@ import React from "react";
 import { AppProps } from "next/app";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend"; // Import the backend
-import "../styles/globals.css";
+import "../src/styles/globals.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
