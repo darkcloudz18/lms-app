@@ -1,4 +1,4 @@
-import courses from "@/data/courses";
+import courses from "/data/courses";
 import Link from "next/link";
 
 export default function CoursesPage() {
