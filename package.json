@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.6",
+    "@supabase/supabase-js": "^2.49.4",
     "bcryptjs": "^3.0.2",
     "browser-image-resizer": "^2.4.1",
     "clsx": "^2.1.1",

@@ -5,6 +5,13 @@ import fs from "fs";
 import fsp from "fs/promises";
 import { PrismaClient } from "@prisma/client";
 
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
+
 const uploadsDir = path.join(process.cwd(), "public/uploads");
 
 export const config = {
@@ -74,10 +81,24 @@ export default async function handler(
       // Handle image if any
       let imageUrl: string | null = existingCourse.imageUrl ?? null;
       if (files.image && Array.isArray(files.image)) {
-        const filename = path.basename(files.image[0].filepath);
-        const targetPath = path.join(uploadsDir, filename);
-        await fsp.copyFile(files.image[0].filepath, targetPath);
-        imageUrl = `/uploads/${filename}`;
+        const file = files.image[0];
+        const filename = `${Date.now()}_${file.originalFilename}`;
+        const buffer = await fsp.readFile(file.filepath);
+
+        const { error } = await supabase.storage
+          .from("uploads") // Bucket name
+          .upload(filename, buffer, {
+            contentType: file.mimetype,
+            upsert: true,
+          });
+
+        if (error) {
+          console.error("Error uploading to Supabase:", error);
+          return res.status(500).json({ error: "Image upload failed" });
+        }
+
+        // Public URL of the uploaded file
+        imageUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/uploads/${filename}`;
       }
 
       // Update the course with new data
